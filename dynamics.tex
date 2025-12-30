@@ -1,0 +1,312 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{cite}
+
+\title{3-D Dynamics Derivations}
+\author{Tanmay}
+
+\begin{document}
+\maketitle
+
+\section{Kinematics (Inertial frame of reference)}
+Kinematics is `the study of motion of points, objects, and systems by examining their motion from a geometric perspective, without focusing on the forces that cause such movements or the physical characteristics of the objects involved` \cite{geeks_kinematics}.
+
+
+\subsection{Linear motion}
+\subsubsection{Frame of reference}
+Consider an \textit{inertial} frame of reference with unit vectors \((\hat{i}, \hat{j}, \hat{k})\) along the \(x\), \(y\), and \(z\) axes respectively. \\
+\begin{equation} \nonumber
+    \begin{aligned}
+        \hat{i} = \begin{pmatrix}
+            1 \\
+            0 \\
+            0
+        \end{pmatrix}, \quad
+        \hat{j} = \begin{pmatrix}
+            0 \\
+            1 \\
+            0
+        \end{pmatrix}, \quad
+        \hat{k} = \begin{pmatrix}
+            0 \\
+            0 \\
+            1
+        \end{pmatrix}
+    \end{aligned}
+\end{equation}
+
+\subsubsection{Position}
+Consider a body located at a point \(\vec{r}\) in the above inertial frame of reference.
+\begin{equation} \nonumber
+    \vec{r} =
+    \begin{pmatrix}
+        x \\
+        y \\
+        z
+    \end{pmatrix}
+    = x \hat{i} + y \hat{j} + z \hat{k}
+\end{equation}
+
+\subsubsection{Velocity}
+Its linear velocity in space is the time-rate of change of these coordinates:
+\begin{equation} \nonumber
+        \vec{v} = \frac{d}{dt}
+        \begin{pmatrix}
+            x \\
+            y \\
+            z
+        \end{pmatrix} =
+        \begin{pmatrix}
+            \dot{x} \\
+            \dot{y} \\
+            \dot{z}
+        \end{pmatrix} = 
+        \dot{x} \hat{i} + \dot{y} \hat{j} + \dot{z} \hat{k}
+\end{equation}
+Note: Since the frame is inertial, the unit vectors do not change with time, hence their derivatives are zero.
+
+\subsubsection{Acceleration}
+Similarly, the linear acceleration is the time-rate of change of linear velocity:
+\begin{equation} \nonumber
+    \vec{a} = \frac{d}{dt} \begin{pmatrix}
+        \dot{x} \\
+        \dot{y} \\
+        \dot{z}
+    \end{pmatrix} = \begin{pmatrix}
+        \ddot{x} \\
+        \ddot{y} \\
+        \ddot{z}
+    \end{pmatrix} = 
+    \ddot{x} \hat{i} + \ddot{y} \hat{j} + \ddot{z} \hat{k}
+\end{equation}
+
+Again, the derivatives of the unit vectors are zero since the frame is inertial.
+
+\subsubsection{Speed}
+The speed of a body is the magnitude of its velocity vector:
+\begin{equation} \nonumber
+    |\vec{v}| = \sqrt{\dot{x}^2 + \dot{y}^2 + \dot{z}^2}
+\end{equation}
+
+\subsubsection{Common linear kinematic equations}
+\begin{equation} \nonumber
+    \begin{aligned}
+        v & = & v_0 + at \\
+        \Delta x & = & \frac{(v + v_0)}{2} t \\
+        \Delta x & = & v_0 t + \frac{1}{2} a t^2 \\
+        v^2 & = & v_0^2 + 2 a \Delta x
+    \end{aligned}
+\end{equation}
+
+\subsection{Rotational motion}
+Consider the same inertial frame as above.
+
+\subsubsection{Angular position}
+
+
+
+\section{Body parameters}
+A rigid body has the following properties:
+
+
+\subsection{Mass}
+Mass \( m \) is the integral over the body's volume \( \Omega \) of the density function \( \rho(x,y,z) \):
+\begin{equation} \nonumber
+    m = \int\int\int_\Omega \rho(x,y,z) \, dx \, dy \, dz
+\end{equation}
+
+
+\subsection{Inertia tensor}
+The inertia tensor \(I_{3x3}\) is a matrix that describes the mass distribution about the CG.
+\begin{equation} \nonumber
+    \mathbf{I} = \begin{bmatrix}
+        I_{xx} & I_{xy} & I_{xz} \\
+        I_{yx} & I_{yy} & I_{yz} \\
+        I_{zx} & I_{zy} & I_{zz}
+    \end{bmatrix}
+\end{equation}
+where \( I_{xx}, I_{yy}, I_{zz} \) are the moments of inertia about the respective axes, and \( I_{xy}, I_{xz}, I_{yz} \) are the products of inertia. \\
+It can also be calculated as:
+\begin{equation} \nonumber
+    \mathbf{I} = \int\int\int_\Omega \rho(x,y,z)
+    (r^Tr-rr^T) \, dx \, dy \, dz
+\end{equation}
+where \( r = (x, y, z)\) is the position vector from the CG to the differential mass element, \(r^Tr\) is the square of the distance from the CG, and \(rr^T\) is the outer product of the position vector with itself. \\
+Some notes on the inertia tensor:
+\begin{itemize}
+    \item It is symmetric, i.e. \( I_{xy} = I_{yx} \), \( I_{xz} = I_{zx} \), \( I_{yz} = I_{zy} \)
+    \item It is positive definite, meaning all its eigenvalues are positive.
+    \item It can be diagonalized by finding its eigenvalues and eigenvectors, which correspond to the principal moments of inertia and principal axes of rotation respectively (using eigenvalue decomposition).
+    \item
+          The off-diagonal terms indicate coupling between rotational axes, i.e. rotation about one axis induces rotation about another. This is well-explained by \cite{veritasium01}.
+\end{itemize}
+
+
+
+
+A large part of this derivation is based on \cite{blackedout01} and \cite{gmu_mech}. Assume the variables contained in this section as independent of those in the rest of this doc.
+
+Consider a body moving in a circle with a constant tangential velocity \(\vec{v}\) around the origin \(O\), with a radius \(\vec{r}\). Calculating the angular momentum \(\vec{L}\) of this particle about the origin:
+\begin{equation} \nonumber
+    \vec{L} = \vec{r} \times (m \vec{v})
+\end{equation}
+
+
+
+
+
+\section{State Variables}
+A rigid body in 3D space has 6 degrees of freedom, 3 translations and 3 rotations. The following variables define the state of a rigid body in 3D space:
+\begin{itemize}
+    \item Position \( \vec{p} \) of the center of gravity (CG) in inertial space
+    \item Orientation defined by Euler angles: yaw \( \psi \), pitch \( \theta \), roll \( \phi \)
+    \item Linear velocity \( \vec{v} \) of the CG in inertial space
+    \item Angular velocity \( \vec{\omega} \) of the body in body-aligned space
+\end{itemize}
+All these variables are assembled into a state vector \( \mathbf{x} \).
+
+\subsection{Position}
+Let the CG of a body of mass \( m \) and inertia tensor \( \mathbf{I} \) have a position in inertial space \(\vec{p}\).
+\begin{equation}
+    \vec{p} = x \hat{i} + y \hat{j} + z \hat{k}
+\end{equation}
+where \( \hat{i}, \hat{j}, \hat{k} \) are unit vectors in the inertial frame along the \( x, y, z \) axes respectively. The axes follow the right-hand rule, where \( x \) is forward, \( y \) is left, and \( z \) is up. Angles follow the right-hand thumb rule.
+
+
+\subsection{Orientation}
+
+Let this body have an arbitrary orientation in space. To align the axes from the inertial-aligned frame \((x, y, z)\)to the body frame \((x_b, y_b, z_b)\), the axes must be rotated by angles in yaw \( \psi \), pitch \( \theta \), and roll \( \phi \), aka Euler angles. These rotations are carried out in the given order around the intermediate axes. i.e. \\
+\begin{itemize}
+    \item Yaw around the inertial-aligned \( z \), which results in the intermediate frame \((x', y', z')\)
+          \begin{equation}
+              \begin{pmatrix}
+                  x' \\
+                  y' \\
+                  z'
+              \end{pmatrix} = R_z(\psi)
+              \begin{pmatrix}
+                  x \\
+                  y \\
+                  z
+              \end{pmatrix}
+          \end{equation}
+    \item Pitch around intermediate \( y' \), which results in the frame \((x'', y'', z'')\)
+          \begin{equation}
+              \begin{pmatrix}
+                  x'' \\
+                  y'' \\
+                  z''
+              \end{pmatrix} = R_y(\theta)
+              \begin{pmatrix}
+                  x' \\
+                  y' \\
+                  z'
+              \end{pmatrix}
+          \end{equation}
+    \item Roll around intermediate \( x'' \), which results in the body frame \((x_b, y_b, z_b)\)
+          \begin{equation}
+              \begin{pmatrix}
+                  x_b \\
+                  y_b \\
+                  z_b
+              \end{pmatrix} = R_x(\phi)
+              \begin{pmatrix}
+                  x'' \\
+                  y'' \\
+                  z''
+              \end{pmatrix}
+          \end{equation}
+\end{itemize}
+The transformation from the inclination of inertial-aligned frame at the body-frame origin to the body frame is given by the rotation matrix \( \mathbf{R} \):
+\begin{equation}
+    \begin{aligned}
+        \mathbf{R}(\psi, \theta, \phi) = \mathbf{R}_z(\psi) \mathbf{R}_y(\theta) \mathbf{R}_x(\phi) \\
+        \mathbf{R}_z(\psi) = \begin{bmatrix}
+                                 \cos\psi & -\sin\psi & 0 \\
+                                 \sin\psi & \cos\psi  & 0 \\
+                                 0        & 0         & 1
+                             \end{bmatrix}                                               \\
+        \mathbf{R}_y(\theta) = \begin{bmatrix}
+                                   \cos\theta  & 0 & \sin\theta \\
+                                   0           & 1 & 0          \\
+                                   -\sin\theta & 0 & \cos\theta
+                               \end{bmatrix}                                         \\
+        \mathbf{R}_x(\phi) = \begin{bmatrix}
+                                 1 & 0        & 0         \\
+                                 0 & \cos\phi & -\sin\phi \\
+                                 0 & \sin\phi & \cos\phi
+                             \end{bmatrix}
+    \end{aligned}
+\end{equation}
+
+The resultant rotation matrix \( \mathbf{R} \) is:
+\begin{equation}
+    \begin{aligned}
+        \mathbf{R}(\psi, \theta, \phi) =
+        \begin{bmatrix}
+            c_\psi c_\theta & c_\psi s_\phi s_\theta - c_\phi s_\psi & s_\phi s_\psi + c_\phi c_\psi s_\theta \\
+            c_\theta s_\psi & c_\phi c_\psi + s_\phi s_\psi s_\theta & c_\phi s_\psi s_\theta - c_\psi s_\phi \\
+            -s_\theta       & c_\theta s_\phi                        & c_\phi c_\theta
+        \end{bmatrix} \\
+        c_\psi = \cos(\psi)                                                                               \\
+        s_\psi = \sin(\psi)                                                                               \\
+        c_\theta = \cos(\theta)                                                                           \\
+        s_\theta = \sin(\theta)                                                                           \\
+        c_\phi = \cos(\phi)                                                                               \\
+        s_\phi = \sin(\phi)                                                                               \\
+    \end{aligned}
+\end{equation}
+
+\subsection{Angular Velocity}
+
+
+\subsection{Linear Velocity}
+The linear velocity is defined in the inertial frame as:
+\begin{equation}
+    \vec{v} = \dot{x} \hat{i} + \dot{y} \hat{j} + \dot{z} \hat{k}
+\end{equation}
+
+\section{Math}
+\subsection{Dot Product}
+For two vectors \( \vec{a} \) and \( \vec{b} \), where \( \theta \) is the angle between the two vectors,
+
+\begin{equation}
+    \vec{a} = a_x \hat{i} + a_y \hat{j} + a_z \hat{k}
+\end{equation}
+\begin{equation}
+    \vec{b} = b_x \hat{i} + b_y \hat{j} + b_z \hat{k}
+\end{equation}
+
+\subsubsection{Vector form}
+\begin{equation}
+    \vec{a} \cdot \vec{b} = |\vec{a}| |\vec{b}| \cos\theta
+\end{equation}
+\subsubsection{Component form}
+\begin{equation}
+    \vec{a} \cdot \vec{b} = a_x b_x + a_y b_y + a_z b_z
+\end{equation}
+
+\subsection{Cross Product}
+With the same vectors as above,
+\subsubsection{Vector form}
+\begin{equation}
+    \vec{a} \times \vec{b} = |\vec{a}| |\vec{b}| \sin\theta \hat{n}
+\end{equation}
+where \( \hat{n} \) is the unit vector perpendicular to the plane formed by \( \vec{a} \) and \( \vec{b} \) following the right-hand rule.
+\subsubsection{Component form}
+\begin{equation}
+    \vec{a} \times \vec{b} = \begin{vmatrix}
+        \hat{i} & \hat{j} & \hat{k} \\
+        a_x     & a_y     & a_z     \\
+        b_x     & b_y     & b_z
+    \end{vmatrix}
+\end{equation}
+\begin{equation}
+    \vec{a} \times \vec{b} = (a_y b_z - a_z b_y) \hat{i} - (a_x b_z - a_z b_x) \hat{j} + (a_x b_y - a_y b_x) \hat{k}
+\end{equation} \\
+In effect, the length is given by the area of the parallelogram formed by the two vectors, and the direction is perpendicular to them.
+
+\bibliography{dynamics.bib}{}
+\bibliographystyle{plain}
+\end{document}
