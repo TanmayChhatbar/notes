@@ -1,20 +1,18 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,12pt]{report}
 \usepackage[a4paper, margin=1in]{geometry}
 \usepackage{amsmath}
 \usepackage{cite}
 
-\title{3-D Dynamics Derivations}
+\title{3-D Mechanics Derivations}
 \author{Tanmay}
 
 \begin{document}
 \maketitle
-
-\section{Kinematics (Inertial frame of reference)}
+\tableofcontents
+\chapter{Kinematics}
 Kinematics is `the study of motion of points, objects, and systems by examining their motion from a geometric perspective, without focusing on the forces that cause such movements or the physical characteristics of the objects involved` \cite{geeks_kinematics}.
 
-
-\subsection{Linear motion}
-\subsubsection{Frame of reference}
+\section{Frame of reference}
 Consider an \textit{inertial} frame of reference with unit vectors \((\hat{i}, \hat{j}, \hat{k})\) along the \(x\), \(y\), and \(z\) axes respectively. \\
 \begin{equation} \nonumber
     \begin{aligned}
@@ -30,7 +28,9 @@ Consider an \textit{inertial} frame of reference with unit vectors \((\hat{i}, \
     \end{aligned}
 \end{equation}
 
-\subsubsection{Position}
+\section{Linear motion}
+
+\subsection{Position}
 Consider a body located at a point \(\vec{r}\) in the above inertial frame of reference.
 \begin{equation} \nonumber
     \vec{r} =
@@ -40,7 +40,7 @@ Consider a body located at a point \(\vec{r}\) in the above inertial frame of re
     = x \hat{i} + y \hat{j} + z \hat{k}
 \end{equation}
 
-\subsubsection{Velocity}
+\subsection{Velocity}
 Its linear velocity in space is the time-rate of change of these coordinates:
 \begin{equation} \nonumber
         \vec{v} = \frac{d}{dt}
@@ -52,7 +52,7 @@ Its linear velocity in space is the time-rate of change of these coordinates:
 \end{equation}
 Note: Since the frame is inertial, the unit vectors do not change with time, hence their derivatives are zero.
 
-\subsubsection{Acceleration}
+\subsection{Acceleration}
 Similarly, the linear acceleration is the time-rate of change of linear velocity:
 \begin{equation} \nonumber
     \vec{a} = \frac{d}{dt} \vec{v}
@@ -66,37 +66,42 @@ Similarly, the linear acceleration is the time-rate of change of linear velocity
 
 Again, the derivatives of the unit vectors are zero since the frame is inertial.
 
-\subsubsection{Speed}
+\subsection{Speed}
 The speed of a body is the magnitude of its velocity vector:
 \begin{equation} \nonumber
     |\vec{v}| = \sqrt{\dot{x}^2 + \dot{y}^2 + \dot{z}^2}
 \end{equation}
 
-\subsubsection{Common linear kinematic equations}
-\begin{equation} \nonumber
-    \begin{aligned}
-        v & = & v_0 + at \\
-        \Delta x & = & \frac{(v + v_0)}{2} t \\
-        \Delta x & = & v_0 t + \frac{1}{2} a t^2 \\
-        v^2 & = & v_0^2 + 2 a \Delta x
-    \end{aligned}
-\end{equation}
+% \subsection{Common linear kinematic equations}
+% \begin{equation} \nonumber
+%     \begin{aligned}
+%         v & = & v_0 + at \\
+%         \Delta x & = & \frac{(v + v_0)}{2} t \\
+%         \Delta x & = & v_0 t + \frac{1}{2} a t^2 \\
+%         v^2 & = & v_0^2 + 2 a \Delta x
+%     \end{aligned}
+% \end{equation}
 
-\subsection{Rotational motion}
-\subsubsection{Position (Orientation)}
+\section{Rotational motion}
+\subsection{Position (Orientation)}
 Consider a body with its CG at the origin of an inertial-aligned frame of reference \((x, y, z)\). The body has an arbitrary orientation wrt the reference frame.
-To align the axes from the referece frame to the body-attached frame \((x_b, y_b, z_b)\), the axes must be rotated. One method of denoting these rotations is using Euler Angles; angles in yaw \( \psi \), pitch \( \theta \), and roll \( \phi \). 
+To align the axes from the referece frame to the body-attached frame \((x_b, y_b, z_b)\), the axes must be rotated.
+
+One method of denoting these rotations is using Euler Angles; angles in yaw \( \psi \), pitch \( \theta \), and roll \( \phi \). 
 \begin{equation} \nonumber
     \Theta = \begin{bmatrix}
         \psi, \theta, \phi
     \end{bmatrix}^T
 \end{equation}
 
-Through this doc, these rotations are carried out in the given order around the intermediate axes. i.e.
+These rotations can be carried out in many different orders. In this case, I'm following what seems to be the standard for aircraft (which has some disadvantages, but is better than other cases afaik). i.e.
 \begin{itemize}
-    \item Yaw around the inertial-aligned \( z \), which results in the intermediate frame \((x', y', z')\)
-    \item Pitch around intermediate \( y' \), which results in the frame \((x'', y'', z'')\)
-    \item Roll around intermediate \( x'' \), which results in the body frame \((x_b, y_b, z_b)\)
+    \item Yaw \( \psi \) around the inertial-aligned \( z \), which results in the intermediate frame \((x', y', z')\)\\
+    Note: \(z=z'\)
+    \item Pitch \( \theta \) around intermediate \( y' \), which results in the frame \((x'', y'', z'')\)\\
+    Note: \(x''=x_b\)
+    \item Roll \( \phi \) around intermediate \( x'' \), which results in the body frame \((x_b, y_b, z_b)\)\\
+    Note: \(y_b=y''\)
           \begin{equation} \nonumber
               \begin{bmatrix}
                   x' \\
@@ -171,14 +176,10 @@ The resultant rotation matrix \( \mathbf{R} \) is:
     \end{aligned}
 \end{equation}
 
-\subsubsection{Velocity}
-Two distinctions must be made here:
-\begin{itemize}
-    \item Euler angle rates \( \dot{\Theta} \): The time-rate of change of Euler angles, expressed in inertial-aligned coordinates.
-    \item Angular velocity \( \vec{\Omega} \): The rate of change of orientation of the body frame wrt the inertial frame, expressed in body-aligned coordinates.
-\end{itemize}
-\subsubsection{Euler angle rates}
-The Euler angle rates are defined as the time-derivatives of the Euler angles:
+\subsection{Velocity}
+The angular velocity of a body can be given in two distinct manners.
+\subsection{Euler angle rates}
+The Euler angle rates are defined as the time-derivatives of the Euler angles, and are defined in the intermediate frames.
 \begin{equation} \nonumber
     \dot{\Theta} = \begin{bmatrix}
         \dot{\phi}, \dot{\theta}, \dot{\psi}
@@ -186,8 +187,8 @@ The Euler angle rates are defined as the time-derivatives of the Euler angles:
      = \dot{\phi} \hat{i}_b + \dot{\theta} \hat{j}' + \dot{\psi} \hat{k}
 \end{equation}
 
-\subsubsection{Body rates}
-The angular velocity \( \vec{\Omega} \) is defined as:
+\subsection{Body rates}
+The angular velocity \( \vec{\Omega} \) is defined as the rate of change of orientation of the body frame wrt the inertial frame, expressed in body-aligned coordinates as:
 \begin{equation} \nonumber
     \vec{\Omega} = \begin{bmatrix}
         p, q, r
@@ -195,7 +196,8 @@ The angular velocity \( \vec{\Omega} \) is defined as:
 \end{equation}
 where \( p, q, r \) are the angular velocity components about the body-aligned axes \( x_b, y_b, z_b \) respectively. Body rates are what gyros measure.
 
-\paragraph{Euler angle rates to Body rates}
+\subsection{Conversion}
+\subsubsection{Euler angle rates to Body rates}
 \begin{equation} \nonumber
     \begin{aligned}
         \begin{bmatrix}
@@ -257,7 +259,7 @@ where \( p, q, r \) are the angular velocity components about the body-aligned a
     \end{aligned}
 \end{equation}
 
-\paragraph{Body rates to Euler angle rates}
+\subsubsection{Body rates to Euler angle rates}
 
 Taking the inverse of the matrix above, we get:
 \begin{equation} \nonumber
@@ -277,7 +279,7 @@ Taking the inverse of the matrix above, we get:
 \end{equation}
 Note: This transformation is undefined for \( \theta = \pm 90^\circ \) (gimbal lock), since \(\tan\theta=\inf\) in the case where the body is pitched straight up or down. This can be fixed using \textit{quaternions} instead of Euler angles.
 
-\paragraph{MATLAB code}
+\subsubsection{MATLAB code}
 \begin{verbatim}
 clc
 syms p q r phi theta psi phidot thetadot psidot
@@ -333,11 +335,18 @@ function latexPrint(m)
 
 end
 \end{verbatim}
+\subsection{Acceleration}
+The angular acceleration \( \dot{\vec{\Omega}} \) is defined as the time-rate of change of angular velocity:
+\begin{equation} \nonumber
+    \vec{\alpha} = \dot{\vec{\Omega}} = \begin{bmatrix}
+        \dot{p}, \dot{q}, \dot{r}
+    \end{bmatrix}^T = \dot{p} \hat{i}_b + \dot{q} \hat{j}_b + \dot{r} \hat{k}_b
+\end{equation}
 
-\subsubsection{Quaternions}
+\subsection{Quaternions}
 TODO
 
-
+\chapter{Dynamics}
 \section{Body parameters}
 A rigid body has the following properties:
 
@@ -458,6 +467,6 @@ where \( \hat{n} \) is the unit vector perpendicular to the plane formed by \( \
 \end{equation} \\
 In effect, the length is given by the area of the parallelogram formed by the two vectors, and the direction is perpendicular to them.
 
-\bibliography{dynamics.bib}{}
+\bibliography{mechanics.bib}{}
 \bibliographystyle{plain}
 \end{document}
