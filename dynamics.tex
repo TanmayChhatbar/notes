@@ -18,21 +18,15 @@ Kinematics is `the study of motion of points, objects, and systems by examining 
 Consider an \textit{inertial} frame of reference with unit vectors \((\hat{i}, \hat{j}, \hat{k})\) along the \(x\), \(y\), and \(z\) axes respectively. \\
 \begin{equation} \nonumber
     \begin{aligned}
-        \hat{i} = \begin{pmatrix}
-            1 \\
-            0 \\
-            0
-        \end{pmatrix}, \quad
-        \hat{j} = \begin{pmatrix}
-            0 \\
-            1 \\
-            0
-        \end{pmatrix}, \quad
-        \hat{k} = \begin{pmatrix}
-            0 \\
-            0 \\
-            1
-        \end{pmatrix}
+        \hat{i} = \begin{bmatrix}
+            1,0,0
+        \end{bmatrix}^T, \quad
+        \hat{j} = \begin{bmatrix}
+            0,1,0
+        \end{bmatrix}^T, \quad
+        \hat{k} = \begin{bmatrix}
+            0,0,1
+        \end{bmatrix}^T
     \end{aligned}
 \end{equation}
 
@@ -40,11 +34,9 @@ Consider an \textit{inertial} frame of reference with unit vectors \((\hat{i}, \
 Consider a body located at a point \(\vec{r}\) in the above inertial frame of reference.
 \begin{equation} \nonumber
     \vec{r} =
-    \begin{pmatrix}
-        x \\
-        y \\
-        z
-    \end{pmatrix}
+    \begin{bmatrix}
+        x, y, z
+    \end{bmatrix}^T
     = x \hat{i} + y \hat{j} + z \hat{k}
 \end{equation}
 
@@ -52,16 +44,10 @@ Consider a body located at a point \(\vec{r}\) in the above inertial frame of re
 Its linear velocity in space is the time-rate of change of these coordinates:
 \begin{equation} \nonumber
         \vec{v} = \frac{d}{dt}
-        \begin{pmatrix}
-            x \\
-            y \\
-            z
-        \end{pmatrix} =
-        \begin{pmatrix}
-            \dot{x} \\
-            \dot{y} \\
-            \dot{z}
-        \end{pmatrix} = 
+        \vec{r} =
+        \begin{bmatrix}
+            \dot{x}, \dot{y}, \dot{z}
+        \end{bmatrix}^T = 
         \dot{x} \hat{i} + \dot{y} \hat{j} + \dot{z} \hat{k}
 \end{equation}
 Note: Since the frame is inertial, the unit vectors do not change with time, hence their derivatives are zero.
@@ -69,15 +55,12 @@ Note: Since the frame is inertial, the unit vectors do not change with time, hen
 \subsubsection{Acceleration}
 Similarly, the linear acceleration is the time-rate of change of linear velocity:
 \begin{equation} \nonumber
-    \vec{a} = \frac{d}{dt} \begin{pmatrix}
-        \dot{x} \\
-        \dot{y} \\
-        \dot{z}
-    \end{pmatrix} = \begin{pmatrix}
-        \ddot{x} \\
-        \ddot{y} \\
-        \ddot{z}
-    \end{pmatrix} = 
+    \vec{a} = \frac{d}{dt} \vec{v}
+    = \frac{d}{dt} \begin{bmatrix}
+        \dot{x}, \dot{y}, \dot{z}
+    \end{bmatrix}^T = \begin{bmatrix}
+        \ddot{x}, \ddot{y}, \ddot{z}
+    \end{bmatrix}^T = 
     \ddot{x} \hat{i} + \ddot{y} \hat{j} + \ddot{z} \hat{k}
 \end{equation}
 
@@ -100,10 +83,259 @@ The speed of a body is the magnitude of its velocity vector:
 \end{equation}
 
 \subsection{Rotational motion}
-Consider the same inertial frame as above.
+\subsubsection{Position (Orientation)}
+Consider a body with its CG at the origin of an inertial-aligned frame of reference \((x, y, z)\). The body has an arbitrary orientation wrt the reference frame.
+To align the axes from the referece frame to the body-attached frame \((x_b, y_b, z_b)\), the axes must be rotated. One method of denoting these rotations is using Euler Angles; angles in yaw \( \psi \), pitch \( \theta \), and roll \( \phi \). 
+\begin{equation} \nonumber
+    \Theta = \begin{bmatrix}
+        \psi, \theta, \phi
+    \end{bmatrix}^T
+\end{equation}
 
-\subsubsection{Angular position}
+Through this doc, these rotations are carried out in the given order around the intermediate axes. i.e.
+\begin{itemize}
+    \item Yaw around the inertial-aligned \( z \), which results in the intermediate frame \((x', y', z')\)
+    \item Pitch around intermediate \( y' \), which results in the frame \((x'', y'', z'')\)
+    \item Roll around intermediate \( x'' \), which results in the body frame \((x_b, y_b, z_b)\)
+          \begin{equation} \nonumber
+              \begin{bmatrix}
+                  x' \\
+                  y' \\
+                  z'
+              \end{bmatrix} = R_z(\psi)
+              \begin{bmatrix}
+                  x \\
+                  y \\
+                  z
+              \end{bmatrix}, \quad
+              \begin{bmatrix}
+                  x'' \\
+                  y'' \\
+                  z''
+              \end{bmatrix} = R_y(\theta)
+              \begin{bmatrix}
+                  x' \\
+                  y' \\
+                  z'
+              \end{bmatrix}, \quad
+              \begin{bmatrix}
+                  x_b \\
+                  y_b \\
+                  z_b
+              \end{bmatrix} = R_x(\phi)
+              \begin{bmatrix}
+                  x'' \\
+                  y'' \\
+                  z''
+              \end{bmatrix}
+          \end{equation}
+\end{itemize}
+The transformation from the inclination of inertial-aligned frame at the body-frame origin to the body frame is given by the rotation matrix \( \mathbf{R} \).
 
+\begin{equation}
+    \begin{aligned}
+        \mathbf{R}(\Theta) &=& \mathbf{R}_x(\phi)  \mathbf{R}_y(\theta) \mathbf{R}_z(\psi)\\
+        \mathbf{R}_z(\psi) &=& \begin{bmatrix}
+                                 \cos\psi & \sin\psi & 0 \\
+                                 -\sin\psi & \cos\psi  & 0 \\
+                                 0        & 0         & 1
+                             \end{bmatrix}                                               \\
+        \mathbf{R}_y(\theta) &=& \begin{bmatrix}
+                                   \cos\theta  & 0 & -\sin\theta \\
+                                   0           & 1 & 0          \\
+                                   \sin\theta & 0 & \cos\theta
+                               \end{bmatrix}                                         \\
+        \mathbf{R}_x(\phi) &=& \begin{bmatrix}
+                                 1 & 0        & 0         \\
+                                 0 & \cos\phi & \sin\phi \\
+                                 0 & -\sin\phi & \cos\phi
+                             \end{bmatrix}
+    \end{aligned}
+\end{equation}
+
+The resultant rotation matrix \( \mathbf{R} \) is:
+\begin{equation}
+    \begin{aligned}
+        \mathbf{R}(\Theta) =
+        \begin{bmatrix}
+            c_\theta c_\psi & c_\theta s_\psi & -s_\theta \\
+            c_\psi s_\phi s_\theta - c_\phi s_\psi & c_\phi c_\psi + s_\phi s_\psi s_\theta & c_\theta s_\phi \\
+            s_\phi s_\psi + c_\phi c_\psi s_\theta & c_\phi s_\psi s_\theta - c_\psi s_\phi & c_\phi c_\theta
+\end{bmatrix} \\
+        c_\psi = \cos(\psi)\\
+        s_\psi = \sin(\psi)\\
+        c_\theta = \cos(\theta)\\
+        s_\theta = \sin(\theta)\\
+        c_\phi = \cos(\phi)\\
+        s_\phi = \sin(\phi)\\
+    \end{aligned}
+\end{equation}
+
+\subsubsection{Velocity}
+Two distinctions must be made here:
+\begin{itemize}
+    \item Euler angle rates \( \dot{\Theta} \): The time-rate of change of Euler angles, expressed in inertial-aligned coordinates.
+    \item Angular velocity \( \vec{\Omega} \): The rate of change of orientation of the body frame wrt the inertial frame, expressed in body-aligned coordinates.
+\end{itemize}
+\subsubsection{Euler angle rates}
+The Euler angle rates are defined as the time-derivatives of the Euler angles:
+\begin{equation} \nonumber
+    \dot{\Theta} = \begin{bmatrix}
+        \dot{\phi}, \dot{\theta}, \dot{\psi}
+    \end{bmatrix}^T
+     = \dot{\phi} \hat{i}_b + \dot{\theta} \hat{j}' + \dot{\psi} \hat{k}
+\end{equation}
+
+\subsubsection{Body rates}
+The angular velocity \( \vec{\Omega} \) is defined as:
+\begin{equation} \nonumber
+    \vec{\Omega} = \begin{bmatrix}
+        p, q, r
+    \end{bmatrix}^T = p \hat{i}_b + q \hat{j}_b + r \hat{k}_b
+\end{equation}
+where \( p, q, r \) are the angular velocity components about the body-aligned axes \( x_b, y_b, z_b \) respectively. Body rates are what gyros measure.
+
+\paragraph{Euler angle rates to Body rates}
+\begin{equation} \nonumber
+    \begin{aligned}
+        \begin{bmatrix}
+            p \\
+            q \\
+            r
+        \end{bmatrix} & = &
+        \mathbf{R}_x
+        \begin{bmatrix}
+            \dot{\phi} \\
+            0 \\
+            0
+        \end{bmatrix} +
+        \mathbf{R}_x
+        \mathbf{R}_y
+        \begin{bmatrix}
+            0 \\
+            \dot{\theta} \\
+            0
+        \end{bmatrix} +
+        \mathbf{R}_x
+        \mathbf{R}_y
+        \mathbf{R}_z
+        \begin{bmatrix}
+            0 \\
+            0 \\
+            \dot{\psi}
+        \end{bmatrix} \\
+         & = &
+        \mathbf{I}
+        \begin{bmatrix}
+            \dot{\phi} \\
+            0 \\
+            0
+        \end{bmatrix} +
+        \mathbf{R}_x
+        \begin{bmatrix}
+            0 \\
+            \dot{\theta} \\
+            0
+        \end{bmatrix} +
+        \mathbf{R}_x
+        \mathbf{R}_y
+        \begin{bmatrix}
+            0 \\
+            0 \\
+            \dot{\psi}
+        \end{bmatrix} \\
+        & = & \begin{bmatrix}
+            1 & 0 & -\sin(\theta) \\
+            0 & \cos(\phi)  & \sin(\phi) \sin(\theta) \\
+            0 & -\sin(\phi)          & \cos(\theta)\cos(\phi)
+        \end{bmatrix}
+        \begin{bmatrix}
+            \dot{\phi} \\
+            \dot{\theta} \\
+            \dot{\psi}
+        \end{bmatrix}
+    \end{aligned}
+\end{equation}
+
+\paragraph{Body rates to Euler angle rates}
+
+Taking the inverse of the matrix above, we get:
+\begin{equation} \nonumber
+    \begin{bmatrix}
+        \dot{\phi} \\
+        \dot{\theta} \\
+        \dot{\psi}
+    \end{bmatrix} =
+    \begin{bmatrix}
+        1 & \sin\phi\tan\theta & \cos\phi\tan\theta \\
+        0 & \cos\phi & -\sin\phi \\
+        0 & \frac{\sin\phi}{\cos\theta} & \frac{\cos\phi}{\cos\theta} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        p \\ q \\ r
+    \end{bmatrix}
+\end{equation}
+Note: This transformation is undefined for \( \theta = \pm 90^\circ \) (gimbal lock), since \(\tan\theta=\inf\) in the case where the body is pitched straight up or down. This can be fixed using \textit{quaternions} instead of Euler angles.
+
+\paragraph{MATLAB code}
+\begin{verbatim}
+clc
+syms p q r phi theta psi phidot thetadot psidot
+
+cp = cos(phi);      sp = sin(phi);
+ct = cos(theta);    st = sin(theta);
+cs = cos(psi);      ss = sin(psi);
+
+Rz = [cs ss 0; -ss cs 0; 0 0 1];
+Ry = [ct 0 -st; 0 1 0; st 0 ct];
+Rx = [1 0 0; 0 cp sp; 0 -sp cp];
+
+R = Rx*Ry*Rz;
+
+%% euler rates to body rates
+% treat euler rates as vectors, decompose in the inertial-aligned frame
+clc
+phidot_comp = simplify(eye(3) * [phidot; 0; 0]);
+thetadot_comp = simplify(Rx * [0; thetadot; 0]);
+psidot_comp = simplify(Rx * Ry * [0; 0; psidot]);
+
+L = [phidot_comp ./ phidot, ...
+    thetadot_comp ./ thetadot, ...
+    psidot_comp ./ psidot]
+% latexPrint(L)
+
+%% body rates to euler rates (inv(L))
+% clc
+Li = simplify(inv(L));
+Li = subs(Li, sin(theta)/cos(theta), tan(theta))
+% latexPrint(Li)
+
+%% functions
+function latexPrint(m)
+    for i = 1:width(m)
+        for j = 1:height(m)
+            strprnt = string(m(i, j));
+
+            strprnt = strrep(strprnt, "sin", "\\sin");
+            strprnt = strrep(strprnt, "cos", "\\cos");
+            strprnt = strrep(strprnt, "tan", "\\tan");
+            strprnt = strrep(strprnt, "(phi)", "\\phi");
+            strprnt = strrep(strprnt, "(theta)", "\\theta");
+            strprnt = strrep(strprnt, "(psi)", "\\psi");
+            strprnt = strrep(strprnt, "*", "");
+            fprintf(strprnt);
+            if j < height(m)
+                fprintf(" & ");
+            end
+        end
+        fprintf(" \\\\\n")
+    end
+
+end
+\end{verbatim}
+
+\subsubsection{Quaternions}
+TODO
 
 
 \section{Body parameters}
@@ -176,88 +408,7 @@ where \( \hat{i}, \hat{j}, \hat{k} \) are unit vectors in the inertial frame alo
 
 \subsection{Orientation}
 
-Let this body have an arbitrary orientation in space. To align the axes from the inertial-aligned frame \((x, y, z)\)to the body frame \((x_b, y_b, z_b)\), the axes must be rotated by angles in yaw \( \psi \), pitch \( \theta \), and roll \( \phi \), aka Euler angles. These rotations are carried out in the given order around the intermediate axes. i.e. \\
-\begin{itemize}
-    \item Yaw around the inertial-aligned \( z \), which results in the intermediate frame \((x', y', z')\)
-          \begin{equation}
-              \begin{pmatrix}
-                  x' \\
-                  y' \\
-                  z'
-              \end{pmatrix} = R_z(\psi)
-              \begin{pmatrix}
-                  x \\
-                  y \\
-                  z
-              \end{pmatrix}
-          \end{equation}
-    \item Pitch around intermediate \( y' \), which results in the frame \((x'', y'', z'')\)
-          \begin{equation}
-              \begin{pmatrix}
-                  x'' \\
-                  y'' \\
-                  z''
-              \end{pmatrix} = R_y(\theta)
-              \begin{pmatrix}
-                  x' \\
-                  y' \\
-                  z'
-              \end{pmatrix}
-          \end{equation}
-    \item Roll around intermediate \( x'' \), which results in the body frame \((x_b, y_b, z_b)\)
-          \begin{equation}
-              \begin{pmatrix}
-                  x_b \\
-                  y_b \\
-                  z_b
-              \end{pmatrix} = R_x(\phi)
-              \begin{pmatrix}
-                  x'' \\
-                  y'' \\
-                  z''
-              \end{pmatrix}
-          \end{equation}
-\end{itemize}
-The transformation from the inclination of inertial-aligned frame at the body-frame origin to the body frame is given by the rotation matrix \( \mathbf{R} \):
-\begin{equation}
-    \begin{aligned}
-        \mathbf{R}(\psi, \theta, \phi) = \mathbf{R}_z(\psi) \mathbf{R}_y(\theta) \mathbf{R}_x(\phi) \\
-        \mathbf{R}_z(\psi) = \begin{bmatrix}
-                                 \cos\psi & -\sin\psi & 0 \\
-                                 \sin\psi & \cos\psi  & 0 \\
-                                 0        & 0         & 1
-                             \end{bmatrix}                                               \\
-        \mathbf{R}_y(\theta) = \begin{bmatrix}
-                                   \cos\theta  & 0 & \sin\theta \\
-                                   0           & 1 & 0          \\
-                                   -\sin\theta & 0 & \cos\theta
-                               \end{bmatrix}                                         \\
-        \mathbf{R}_x(\phi) = \begin{bmatrix}
-                                 1 & 0        & 0         \\
-                                 0 & \cos\phi & -\sin\phi \\
-                                 0 & \sin\phi & \cos\phi
-                             \end{bmatrix}
-    \end{aligned}
-\end{equation}
-
-The resultant rotation matrix \( \mathbf{R} \) is:
-\begin{equation}
-    \begin{aligned}
-        \mathbf{R}(\psi, \theta, \phi) =
-        \begin{bmatrix}
-            c_\psi c_\theta & c_\psi s_\phi s_\theta - c_\phi s_\psi & s_\phi s_\psi + c_\phi c_\psi s_\theta \\
-            c_\theta s_\psi & c_\phi c_\psi + s_\phi s_\psi s_\theta & c_\phi s_\psi s_\theta - c_\psi s_\phi \\
-            -s_\theta       & c_\theta s_\phi                        & c_\phi c_\theta
-        \end{bmatrix} \\
-        c_\psi = \cos(\psi)                                                                               \\
-        s_\psi = \sin(\psi)                                                                               \\
-        c_\theta = \cos(\theta)                                                                           \\
-        s_\theta = \sin(\theta)                                                                           \\
-        c_\phi = \cos(\phi)                                                                               \\
-        s_\phi = \sin(\phi)                                                                               \\
-    \end{aligned}
-\end{equation}
-
+Let this body have an arbitrary orientation in space. 
 \subsection{Angular Velocity}
 
 
