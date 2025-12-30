@@ -1,0 +1,6 @@
+# Ignore everything
+*
+
+# Allow only .pdf, .tex, and .bib files
+!*.tex
+!*.bib
