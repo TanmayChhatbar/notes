@@ -1,0 +1,124 @@
+\chapter{Dynamics}
+\section{Body parameters}
+A rigid body must have the following properties defined:
+
+\subsection{Mass}
+Mass \( m \) is the integral over the body's volume \( \Omega \) of the density function \( \rho(x,y,z) \):
+\begin{equation} \nonumber
+    m = \int\int\int_\Omega \rho(x,y,z) \, dx \, dy \, dz
+\end{equation}
+
+\subsection{Center of Mass}
+The CM is the average position of all the mass in the body. It is calculated as:
+\begin{equation} \nonumber
+    \vec{r}_{CM} = \frac{1}{m} \int\int\int_\Omega \rho(x,y,z)
+    \begin{bmatrix}
+        x \\ y \\ z
+    \end{bmatrix}
+    \, dx \, dy \, dz
+\end{equation}
+
+For small bodies, \(CM \approx CG\), where CG is the point where the gravitational force can be considered to act. This assumption is not true for large bodies where the gravitational force cannot be assumed to act evenly across all mass in the body.
+
+\subsection{Inertia tensor}
+The inertia tensor \(I_{3x3}\) is a matrix that describes the mass distribution about the CG.
+\begin{equation} \nonumber
+    \mathbf{I} = \begin{bmatrix}
+        I_{xx} & I_{xy} & I_{xz} \\
+        I_{yx} & I_{yy} & I_{yz} \\
+        I_{zx} & I_{zy} & I_{zz}
+    \end{bmatrix}
+\end{equation}
+where \( I_{xx}, I_{yy}, I_{zz} \) are the moments of inertia about the respective axes, and \( I_{xy}, I_{xz}, I_{yz} \) are the products of inertia. \\
+\((I_{xy}, I_{yz}, I_{zx}) = \vec{0}\) for the principal axes. \\
+
+The inertia tensor can also be calculated as:
+\begin{equation} \nonumber
+    \mathbf{I} = \int\int\int_\Omega \rho(x,y,z)
+    (r^Tr-rr^T) \, dx \, dy \, dz
+\end{equation}
+where \( r = (x, y, z)\) is the position vector from the CG to the differential mass element, \(r^Tr\) is the square of the distance from the CG, and \(rr^T\) is the outer product of the position vector with itself. \\
+Some notes on the inertia tensor:
+\begin{itemize}
+    \item It is symmetric, i.e. \( I_{xy} = I_{yx} \), \( I_{xz} = I_{zx} \), \( I_{yz} = I_{zy} \)
+    \item It is positive definite, meaning all its eigenvalues are positive.
+    \item It can be diagonalized by finding its eigenvalues and eigenvectors, which correspond to the principal moments of inertia and principal axes of rotation respectively (using eigenvalue decomposition, the eigenvectors of which give the transformation from the inertia tensor from the principal axes to the reference frame).
+    \item The off-diagonal terms indicate coupling between rotational axes, i.e. rotation about one axis induces rotation about another. This is well-explained by \cite{veritasium01}.
+    \item If the body is symmetric about an axis, the products of inertia involving that axis are zero.
+\end{itemize}
+
+\subsubsection{Derivation}
+A large part of this derivation is based on \cite{blackedout01} and \cite{gmu_mech}. Assume the variables contained in this section as independent of those in the rest of this doc.
+
+Consider a body moving in a circle with a constant tangential velocity \(\vec{v}\) around the origin \(O\), with a radius \(\vec{r}\). Calculating the angular momentum \(\vec{L}\) of this particle about the origin:
+\begin{equation} \nonumber
+    \vec{L} = \vec{r} \times (m \vec{v})
+\end{equation}
+
+\section{State Variables}
+A rigid body in 3D space has 6 degrees of freedom, 3 translations and 3 rotations. The following variables define the state of a rigid body in 3D space:
+\begin{itemize}
+    \item Position \( \vec{p} \) of the center of gravity (CG) in inertial space
+    \item Orientation defined by Euler angles: yaw \( \psi \), pitch \( \theta \), roll \( \phi \)
+    \item Linear velocity \( \vec{v} \) of the CG in inertial space
+    \item Angular velocity \( \vec{\omega} \) of the body in body-aligned space
+\end{itemize}
+All these variables are assembled into a state vector \( \mathbf{x} \).
+
+\subsection{Position}
+Let the CG of a body of mass \( m \) and inertia tensor \( \mathbf{I} \) have a position in inertial space \(\vec{p}\).
+\begin{equation}
+    \vec{p} = x \hat{i} + y \hat{j} + z \hat{k}
+\end{equation}
+where \( \hat{i}, \hat{j}, \hat{k} \) are unit vectors in the inertial frame along the \( x, y, z \) axes respectively. The axes follow the right-hand rule, where \( x \) is forward, \( y \) is left, and \( z \) is up. Angles follow the right-hand thumb rule.
+
+\subsection{Orientation}
+
+Let this body have an arbitrary orientation in space.
+\subsection{Angular Velocity}
+
+\subsection{Linear Velocity}
+The linear velocity is defined in the inertial frame as:
+\begin{equation}
+    \vec{v} = \dot{x} \hat{i} + \dot{y} \hat{j} + \dot{z} \hat{k}
+\end{equation}
+
+\section{Math}
+\subsection{Dot Product}
+For two vectors \( \vec{a} \) and \( \vec{b} \), where \( \theta \) is the angle between the two vectors,
+
+\begin{equation}
+    \vec{a} = a_x \hat{i} + a_y \hat{j} + a_z \hat{k}
+\end{equation}
+\begin{equation}
+    \vec{b} = b_x \hat{i} + b_y \hat{j} + b_z \hat{k}
+\end{equation}
+
+\subsubsection{Vector form}
+\begin{equation}
+    \vec{a} \cdot \vec{b} = |\vec{a}| |\vec{b}| \cos\theta
+\end{equation}
+\subsubsection{Component form}
+\begin{equation}
+    \vec{a} \cdot \vec{b} = a_x b_x + a_y b_y + a_z b_z
+\end{equation}
+
+\subsection{Cross Product}
+With the same vectors as above,
+\subsubsection{Vector form}
+\begin{equation}
+    \vec{a} \times \vec{b} = |\vec{a}| |\vec{b}| \sin\theta \hat{n}
+\end{equation}
+where \( \hat{n} \) is the unit vector perpendicular to the plane formed by \( \vec{a} \) and \( \vec{b} \) following the right-hand rule.
+\subsubsection{Component form}
+\begin{equation}
+    \vec{a} \times \vec{b} = \begin{vmatrix}
+        \hat{i} & \hat{j} & \hat{k} \\
+        a_x     & a_y     & a_z     \\
+        b_x     & b_y     & b_z
+    \end{vmatrix}
+\end{equation}
+\begin{equation}
+    \vec{a} \times \vec{b} = (a_y b_z - a_z b_y) \hat{i} - (a_x b_z - a_z b_x) \hat{j} + (a_x b_y - a_y b_x) \hat{k}
+\end{equation} \\
+In effect, the length is given by the area of the parallelogram formed by the two vectors, and the direction is perpendicular to them.

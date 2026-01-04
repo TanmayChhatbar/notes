@@ -1,0 +1,400 @@
+
+\chapter{Kinematics}
+Kinematics is `the study of motion of points, objects, and systems by examining their motion from a geometric perspective, without focusing on the forces that cause such movements or the physical characteristics of the objects involved' \cite{geeks_kinematics}.
+
+\section{Frame of reference}
+Consider an \textit{inertial} frame of reference with unit vectors \((\hat{i}, \hat{j}, \hat{k})\) along the \(x\), \(y\), and \(z\) axes respectively. \\
+\begin{equation} \nonumber
+    \begin{aligned}
+        \hat{i} = \begin{bmatrix}
+                      1,0,0
+                  \end{bmatrix}^T, \quad
+        \hat{j} = \begin{bmatrix}
+                      0,1,0
+                  \end{bmatrix}^T, \quad
+        \hat{k} = \begin{bmatrix}
+                      0,0,1
+                  \end{bmatrix}^T
+    \end{aligned}
+\end{equation}
+
+\section{Translation (Inertial frame of reference)}
+
+\subsection{Position}
+Consider a body located at a point \(\vec{r}\) in the above inertial frame of reference.
+\begin{equation} \nonumber
+    \vec{r} =
+    \begin{bmatrix}
+        x, y, z
+    \end{bmatrix}^T
+    = x \hat{i} + y \hat{j} + z \hat{k}
+\end{equation}
+
+\subsection{Velocity}
+Its linear velocity in space is the time-rate of change of these coordinates:
+\begin{equation} \nonumber
+    \vec{v} = \frac{d}{dt}
+    \vec{r} =
+    \begin{bmatrix}
+        \dot{x}, \dot{y}, \dot{z}
+    \end{bmatrix}^T =
+    \dot{x} \hat{i} + \dot{y} \hat{j} + \dot{z} \hat{k}
+\end{equation}
+Note: Since the frame is inertial, the unit vectors do not change with time, hence their derivatives are zero.
+
+\subsection{Acceleration}
+Similarly, the linear acceleration is the time-rate of change of linear velocity:
+\begin{equation} \nonumber
+    \vec{a} = \frac{d}{dt} \vec{v}
+    = \frac{d}{dt} \begin{bmatrix}
+        \dot{x}, \dot{y}, \dot{z}
+    \end{bmatrix}^T = \begin{bmatrix}
+        \ddot{x}, \ddot{y}, \ddot{z}
+    \end{bmatrix}^T =
+    \ddot{x} \hat{i} + \ddot{y} \hat{j} + \ddot{z} \hat{k}
+\end{equation}
+
+Again, the derivatives of the unit vectors are zero since the frame is inertial.
+
+\subsection{Speed}
+The speed of a body is the magnitude of its velocity vector:
+\begin{equation} \nonumber
+    |\vec{v}| = \sqrt{\dot{x}^2 + \dot{y}^2 + \dot{z}^2}
+\end{equation}
+
+% \subsection{Common linear kinematic equations}
+% \begin{equation} \nonumber
+%     \begin{aligned}
+%         v & = & v_0 + at \\
+%         \Delta x & = & \frac{(v + v_0)}{2} t \\
+%         \Delta x & = & v_0 t + \frac{1}{2} a t^2 \\
+%         v^2 & = & v_0^2 + 2 a \Delta x
+%     \end{aligned}
+% \end{equation}
+
+\section{Rotation (Inertial frame of reference)}
+\subsection{Position (Orientation)}
+Consider a body with its CG at the origin of an inertial-aligned frame of reference \((x, y, z)\). The body has an arbitrary orientation wrt the reference frame.
+To align the axes from the reference frame to the body-attached frame \((x_b, y_b, z_b)\), the axes must be rotated.
+
+One method of denoting these rotations is using Euler Angles; angles in yaw \( \psi \), pitch \( \theta \), and roll \( \phi \).
+\begin{equation} \nonumber
+    \Theta = \begin{bmatrix}
+        \psi, \theta, \phi
+    \end{bmatrix}^T
+\end{equation}
+
+These rotations can be carried out in many different orders. In this case, I'm following what seems to be the standard for aircraft (which has some disadvantages, but is better than other cases afaik). i.e.
+\begin{itemize}
+    \item Yaw \( \psi \) around the inertial-aligned \( z \), which results in the intermediate frame \((x', y', z')\)\\
+          Note: \(z=z'\)
+    \item Pitch \( \theta \) around intermediate \( y' \), which results in the frame \((x'', y'', z'')\)\\
+          Note: \(x''=x_b\)
+    \item Roll \( \phi \) around intermediate \( x'' \), which results in the body frame \((x_b, y_b, z_b)\)\\
+          Note: \(y_b=y''\)
+          \begin{equation} \nonumber
+              \begin{bmatrix}
+                  x' \\
+                  y' \\
+                  z'
+              \end{bmatrix} = \mathbf{R}_z(\psi)
+              \begin{bmatrix}
+                  x \\
+                  y \\
+                  z
+              \end{bmatrix}, \quad
+              \begin{bmatrix}
+                  x'' \\
+                  y'' \\
+                  z''
+              \end{bmatrix} = \mathbf{R}_y(\theta)
+              \begin{bmatrix}
+                  x' \\
+                  y' \\
+                  z'
+              \end{bmatrix}, \quad
+              \begin{bmatrix}
+                  x_b \\
+                  y_b \\
+                  z_b
+              \end{bmatrix} = \mathbf{R}_x(\phi)
+              \begin{bmatrix}
+                  x'' \\
+                  y'' \\
+                  z''
+              \end{bmatrix}
+          \end{equation}
+\end{itemize}
+
+The transformation from the inclination of inertial-aligned frame at the body-frame origin to the body frame is given by the rotation matrix \( \mathbf{R} \). Rotation matrices are orthonormal matrices.
+They can be used in two manners:
+\begin{itemize}
+    \item \textbf{Extrinsic rotations}: Rotations to convert the body-frame coordinates to inertial-frame coordinates.
+    \item \textbf{Intrinsic rotations}: Rotations to convert the inertial-frame coordinates to body-frame coordinates.
+\end{itemize}
+In general, if we want to transform a vector \( \vec{v} \) in the inertial space, we use the intrinsic rotation.
+If we want to calculate the coordinates of the vector in the inertial frame, when those in the body-frame are known, we ue the extrinsic rotation.
+Extrinsic rotations are the inverse of intrinsic rotations. Since rotation matrices are orthogonal, the inverse is equal to the transpose.
+
+\begin{equation}
+    \begin{aligned}
+        \mathbf{R}(\Theta)   & = & \mathbf{R}_x(\phi)  \mathbf{R}_y(\theta) \mathbf{R}_z(\psi) \\
+        \mathbf{R}_z(\psi)   & = &
+        \begin{bmatrix}
+            \cos\psi  & \sin\psi & 0 \\
+            -\sin\psi & \cos\psi & 0 \\
+            0         & 0        & 1
+        \end{bmatrix}                                                               \\
+        \mathbf{R}_y(\theta) & = &
+        \begin{bmatrix}
+            \cos\theta & 0 & -\sin\theta \\
+            0          & 1 & 0           \\
+            \sin\theta & 0 & \cos\theta
+        \end{bmatrix}                                                           \\
+        \mathbf{R}_x(\phi)   & = &
+        \begin{bmatrix}
+            1 & 0         & 0        \\
+            0 & \cos\phi  & \sin\phi \\
+            0 & -\sin\phi & \cos\phi
+        \end{bmatrix}
+    \end{aligned}
+\end{equation}
+
+The resultant rotation matrix \( \mathbf{R} \) is:
+\begin{equation}
+    \begin{aligned}
+        \mathbf{R}(\Theta) =
+        \begin{bmatrix}
+            c_\theta c_\psi                        & c_\theta s_\psi                        & -s_\theta       \\
+            c_\psi s_\phi s_\theta - c_\phi s_\psi & c_\phi c_\psi + s_\phi s_\psi s_\theta & c_\theta s_\phi \\
+            s_\phi s_\psi + c_\phi c_\psi s_\theta & c_\phi s_\psi s_\theta - c_\psi s_\phi & c_\phi c_\theta
+        \end{bmatrix} \\
+        c_\psi = \cos(\psi)                                                                               \\
+        s_\psi = \sin(\psi)                                                                               \\
+        c_\theta = \cos(\theta)                                                                           \\
+        s_\theta = \sin(\theta)                                                                           \\
+        c_\phi = \cos(\phi)                                                                               \\
+        s_\phi = \sin(\phi)                                                                               \\
+    \end{aligned}
+\end{equation}
+
+\subsection{Velocity}
+The angular velocity of a body can be given in two distinct manners.
+\subsection{Euler angle rates}
+The Euler angle rates are defined as the time-derivatives of the Euler angles, and are defined in the intermediate frames.
+\begin{equation} \nonumber
+    \dot{\Theta} = \begin{bmatrix}
+        \dot{\phi}, \dot{\theta}, \dot{\psi}
+    \end{bmatrix}^T
+    = \dot{\phi} \hat{i}_b + \dot{\theta} \hat{j}' + \dot{\psi} \hat{k}
+\end{equation}
+
+\subsection{Body rates}
+The angular velocity \( \vec{\Omega} \) is defined as the rate of change of orientation of the body frame wrt the inertial frame, expressed in body-aligned coordinates as:
+\begin{equation} \nonumber
+    \vec{\Omega} = \begin{bmatrix}
+        p, q, r
+    \end{bmatrix}^T = p \hat{i}_b + q \hat{j}_b + r \hat{k}_b
+\end{equation}
+where \( p, q, r \) are the angular velocity components about the body-aligned axes \( x_b, y_b, z_b \) respectively. Body rates are what gyros measure.
+Body rates can be converted to angular rates in the inertial-aligned frame simply using the rotation matrix.
+
+\subsection{Conversion}
+\subsubsection{Euler angle rates to Body rates}
+\begin{equation} \nonumber
+    \begin{aligned}
+        \begin{bmatrix}
+            p \\
+            q \\
+            r
+        \end{bmatrix} & = &
+        \mathbf{R}_x
+        \begin{bmatrix}
+            \dot{\phi} \\
+            0          \\
+            0
+        \end{bmatrix} +
+        \mathbf{R}_x
+        \mathbf{R}_y
+        \begin{bmatrix}
+            0            \\
+            \dot{\theta} \\
+            0
+        \end{bmatrix} +
+        \mathbf{R}_x
+        \mathbf{R}_y
+        \mathbf{R}_z
+        \begin{bmatrix}
+            0 \\
+            0 \\
+            \dot{\psi}
+        \end{bmatrix}        \\
+                        & = &
+        \mathbf{I}
+        \begin{bmatrix}
+            \dot{\phi} \\
+            0          \\
+            0
+        \end{bmatrix} +
+        \mathbf{R}_x
+        \begin{bmatrix}
+            0            \\
+            \dot{\theta} \\
+            0
+        \end{bmatrix} +
+        \mathbf{R}_x
+        \mathbf{R}_y
+        \begin{bmatrix}
+            0 \\
+            0 \\
+            \dot{\psi}
+        \end{bmatrix}        \\
+        & = &
+        \begin{bmatrix}
+            1 & 0           & -\sin(\theta)           \\
+            0 & \cos(\phi)  & \sin(\phi) \sin(\theta) \\
+            0 & -\sin(\phi) & \cos(\theta)\cos(\phi)
+        \end{bmatrix}
+        \begin{bmatrix}
+            \dot{\phi}   \\
+            \dot{\theta} \\
+            \dot{\psi}
+        \end{bmatrix}
+    \end{aligned}
+\end{equation}
+
+\subsubsection{Body rates to Euler angle rates}
+
+Taking the inverse of the matrix above, we get:
+\begin{equation} \nonumber
+    \begin{bmatrix}
+        \dot{\phi}   \\
+        \dot{\theta} \\
+        \dot{\psi}
+    \end{bmatrix} =
+    \begin{bmatrix}
+        1 & \sin\phi\tan\theta          & \cos\phi\tan\theta          \\
+        0 & \cos\phi                    & -\sin\phi                   \\
+        0 & \frac{\sin\phi}{\cos\theta} & \frac{\cos\phi}{\cos\theta} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        p \\ q \\ r
+    \end{bmatrix}
+\end{equation}
+Note: This transformation is undefined for \( \theta = \pm 90^\circ \) (gimbal lock), since \(\tan\theta=\inf\) in the case where the body is pitched straight up or down. This can be fixed using \textit{quaternions} instead of Euler angles.
+
+\subsection{Acceleration}
+The angular acceleration \( \dot{\vec{\Omega}} \) is defined as the time-rate of change of angular velocity:
+\begin{equation} \nonumber
+    \vec{\alpha} = \dot{\vec{\Omega}} = \begin{bmatrix}
+        \dot{p}, \dot{q}, \dot{r}
+    \end{bmatrix}^T = \dot{p} \hat{i}_b + \dot{q} \hat{j}_b + \dot{r} \hat{k}_b
+\end{equation}
+
+\subsection{Quaternions}
+TODO
+
+\section{Translation (Non-inertial frame of reference)}
+Consider an inertial (global) frame of reference \((x_E, y_E, z_E)\) with unit vectors \((\hat{i}_E, \hat{j}_E, \hat{k}_E)\) along the \(X\), \(Y\), and \(Z\) axes respectively. \\
+\begin{equation} \nonumber
+    \begin{aligned}
+        \hat{i}_E = \begin{bmatrix}
+                        1,0,0
+                    \end{bmatrix}^T, \quad
+        \hat{j}_E = \begin{bmatrix}
+                        0,1,0
+                    \end{bmatrix}^T, \quad
+        \hat{k}_E = \begin{bmatrix}
+                        0,0,1
+                    \end{bmatrix}^T
+    \end{aligned}
+\end{equation}
+
+Consider the non-inertial frame \((x, y, z)\) is located at \(\vec{r}\) in the inertial frame.
+\subsection{Position}
+
+Consider a point is located at \(\vec{r}_b\) in the non-inertial frame of reference.
+The position of the point in the non-inertial frame is given by:
+\begin{equation} \nonumber
+    \vec{r}_b = x_b \hat{i} + y_b \hat{j} + z_b \hat{k}
+\end{equation}
+If the orientation of both the frames is the same, the position of the point in the inertial frame is simply:
+\begin{equation} \nonumber
+    \vec{r}^{\ E}_b = \vec{r} + \vec{r}_b
+\end{equation}
+If the orientation of the non-inertial frame is given by the Euler angles \( \Theta \), the position of the point in the inertial frame is given by:
+\begin{equation} \nonumber
+    \vec{r}^{\ E}_b = \vec{r} + \mathbf{R}(\Theta) \vec{r}_b
+\end{equation}
+where \( \Theta \) is the vector of Euler angles, and the resultant rotation matrix \( \mathbf{R}(\Theta) \) is defined in the extrinsic sense (i.e. it converts coordinates \( \vec{r}_b \) from the non-inertial frame to the inertial frame).
+
+\subsection{Velocity}
+Again, velocity is the time-rate of change of position.
+\begin{equation} \nonumber
+    \begin{aligned}
+        \vec{v}^{\ E}_b & = & \frac{d}{dt} \vec{r}^{\ E}_b                                                    \\
+                        & = & \frac{d}{dt} \vec{r} + \frac{d}{dt} \left( \mathbf{R}(\Theta) \vec{r}_b \right) \\
+                        & = & \vec{v} + \dot{\mathbf{R}}(\Theta) \vec{r}_b + \mathbf{R}(\Theta) \vec{v}_b
+    \end{aligned}
+\end{equation}
+
+\cite{zhao_dRdt} shows the following relationship:
+\begin{equation} \nonumber
+    \dot{\mathbf{R}} = \mathbf{R} [\vec{\Omega}_b]_\times
+\end{equation}
+where \( [\vec{\Omega}_b]_\times \) is the skew-symmetric matrix of the angular velocity vector \( \vec{\Omega}_b \) expressed in the body-aligned frame.
+\begin{equation} \nonumber
+    [\vec{\Omega}_b]_\times = \begin{bmatrix}
+        0  & -r & q  \\
+        r  & 0  & -p \\
+        -q & p  & 0
+    \end{bmatrix}
+\end{equation}
+As a result, the velocity equation becomes:
+\begin{equation} \nonumber
+    \begin{aligned}
+        \vec{v}^{\ E}_b & = & \vec{v} + \mathbf{R} [\vec{\Omega}_b]_\times \vec{r}_b + \mathbf{R} \vec{v}_b
+                        & = & \vec{v} + \mathbf{R} \left(\vec{v}_b + \vec{\Omega}_b \times \vec{r}_b \right)
+    \end{aligned}
+\end{equation}
+
+\subsection{Acceleration}
+The acceleration is the time-rate of change of velocity.
+\begin{equation} \nonumber
+    \begin{aligned}
+        \vec{a}^{\ E}_b & = & \frac{d}{dt} \vec{v}^{\ E}_b                                                                                                                                                                                           \\
+                        & = & \frac{d}{dt} \vec{v} + \frac{d}{dt} \left( \mathbf{R} \left(\vec{v}_b + \vec{\Omega}_b \times \vec{r}_b \right) \right)                                                                                                \\
+                        & = & \vec{a} + \dot{\mathbf{R}} \left(\vec{v}_b + \vec{\Omega}_b \times \vec{r}_b \right) + \mathbf{R} \frac{d}{dt} \left(\vec{v}_b + \vec{\Omega}_b \times \vec{r}_b \right)                                               \\
+                        & = & \vec{a} + \mathbf{R} [\vec{\Omega}_b]_\times \left(\vec{v}_b + \vec{\Omega}_b \times \vec{r}_b \right) + \mathbf{R} \left( \vec{a}_b + \dot{\vec{\Omega}}_b \times \vec{r}_b + \vec{\Omega}_b \times \vec{v}_b \right) \\
+                        & = & \vec{a} + \mathbf{R} \left( \vec{\Omega}_b \times \vec{v}_b + \vec{\Omega}_b \times (\vec{\Omega}_b \times \vec{r}_b) +  \vec{a}_b + \dot{\vec{\Omega}}_b \times \vec{r}_b + \vec{\Omega}_b \times \vec{v}_b\right)    \\
+                        & = & \vec{a} + \mathbf{R} \left(\vec{a}_b + 2 (\vec{\Omega}_b \times \vec{v}_b) + \vec{\Omega}_b \times(\vec{\Omega}_b \times \vec{r}_b) +  \dot{\vec{\Omega}}_b \times \vec{r}_b\right)                                    \\
+    \end{aligned}
+\end{equation}
+where \(\vec{a}\) is the acceleration of the non-inertial frame in the inertial frame, \\
+\(\vec{a}_b\) is the acceleration of the coordinate / body in the non-inertial frame, \\
+\(2 (\vec{\Omega}_b \times \vec{v}_b)\) is the Coriolis acceleration, \\
+\(\vec{\Omega}_b \times(\vec{\Omega}_b \times \vec{r}_b) \) is the centrifugal acceleration, \\
+\(\dot{\vec{\Omega}}_b \times \vec{r}_b \) is the Euler acceleration\\
+
+\section{Rotation (Non-inertial frame of reference)}
+
+\subsection{Position (Orientation)}
+Multiple rotations can be combined by multiplying their respective rotation matrices.
+Consider a vector \( \vec{r}\) in the frame \(A\).
+To convert it to frame \(C\) via an intermediate frame \(B\), we can use:
+\begin{equation} \nonumber
+    \vec{r}_C = \mathbf{R}^C_B\mathbf{R}^B_A \vec{r}_A
+\end{equation}
+where \( \mathbf{R}^B_A \) is the rotation matrix from frame \(A\) to frame \(B\), and \( \mathbf{R}^C_B \) is the rotation matrix from frame \(B\) to frame \(C\).
+
+\subsection{Velocity}
+Multiple angular velocities can be combined by adding them after converting them to the same frame of reference.
+
+Consider a body rotating with angular velocity \( \vec{\Omega}\) in the frame \(A\) (given in frame \(A\)).
+If frame \(A\) is rotating relative to frame \(B\) with angular velocity \( \vec{\Omega}_A\) (given in frame \(B\)), and frame \(B\) is rotating relative to frame \(C\) with angular velocity \( \vec{\Omega}_B\) (given in frame \(C\)), the angular velocity of the body in frame \(C\) is given by:
+\begin{equation} \nonumber
+    \vec{\Omega}_C = \mathbf{R}^C_B \left(\mathbf{R}^B_A \vec{\Omega} + \vec{\Omega}_A \right) + \vec{\Omega}_B
+\end{equation}
+
+\subsection{Acceleration}
+TODO
